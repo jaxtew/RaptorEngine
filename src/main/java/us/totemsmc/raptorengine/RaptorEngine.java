@@ -2,12 +2,15 @@ package us.totemsmc.raptorengine;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import us.totemsmc.raptorengine.api.JSONConfiguration;
+import us.totemsmc.raptorengine.map.RaptorMap;
 
 import java.io.IOException;
 
 public class RaptorEngine extends JavaPlugin
 {
-    private RaptorConfiguration configuration;
+    private static RaptorConfiguration configuration;
+
+    private RaptorMap map = null;
 
     @Override
     public void onLoad()
@@ -17,7 +20,7 @@ public class RaptorEngine extends JavaPlugin
         {
             configuration = JSONConfiguration.load(RaptorConfiguration.class, getDataFolder().toPath().resolve(
                     "config.json"));
-            if(configuration.DEBUG) getLogger().info("Loaded configuration");
+            if (RaptorConfiguration.DEBUG) getLogger().info("Loaded configuration");
         } catch (IOException e)
         {
             getLogger().severe("Failed to load configuration");
@@ -28,7 +31,28 @@ public class RaptorEngine extends JavaPlugin
     @Override
     public void onEnable()
     {
-
+//        getCommand("raptor").setExecutor(((sender, command, label, args) ->
+//        {
+//            if (map == null)
+//            {
+//                try
+//                {
+//                    map = new RaptorMap("test",
+//                            getServer().getPluginManager().getPlugin("WorldEdit").getDataFolder().toPath().resolve(
+//                                    "schematics").resolve("test_map.schem"), new TestRaptorGame());
+//                } catch (IOException e)
+//                {
+//                    e.printStackTrace();
+//                } catch (WorldEditException e)
+//                {
+//                    e.printStackTrace();
+//                }
+//            } else
+//            {
+//                map.close();
+//            }
+//            return true;
+//        }));
     }
 
     @Override
@@ -43,7 +67,7 @@ public class RaptorEngine extends JavaPlugin
         try
         {
             JSONConfiguration.save(configuration);
-            if(configuration.DEBUG) getLogger().info("Saved configuration");
+            if (RaptorConfiguration.DEBUG) getLogger().info("Saved configuration");
         } catch (IOException e)
         {
             getLogger().severe("Failed to save configuration");
@@ -51,7 +75,7 @@ public class RaptorEngine extends JavaPlugin
         }
     }
 
-    public RaptorConfiguration getConfiguration()
+    public static RaptorConfiguration getConfiguration()
     {
         return configuration;
     }

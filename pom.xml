@@ -31,6 +31,12 @@
             <artifactId>worldedit-bukkit</artifactId>
             <version>7.0.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.onarandombox.multiversecore</groupId>
+            <artifactId>Multiverse-Core</artifactId>
+            <scope>system</scope>
+            <systemPath>/Users/jackson/IdeaProjects/Multiverse-Core/target/Multiverse-Core-4.1.0-SNAPSHOT.jar</systemPath>
+        </dependency>
     </dependencies>
 
     <build>

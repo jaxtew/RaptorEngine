@@ -3,5 +3,7 @@ main: "us.totemsmc.raptorengine.RaptorEngine"
 version: ${project.version}
 api-version: "1.14"
 description: "Powers TotemMC minigame"
-depend: ["WorldEdit"]
+depend: ["Multiverse-Core", "VoidGenerator", "WorldEdit"]
 author: "jts3304"
+commands:
+  raptor:
