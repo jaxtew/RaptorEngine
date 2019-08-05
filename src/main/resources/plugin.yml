@@ -1,0 +1,7 @@
+name: "RaptorEngine"
+main: "us.totemsmc.raptorengine.RaptorEngine"
+version: ${project.version}
+api-version: "1.14"
+description: "Powers TotemMC minigame"
+depend: ["WorldEdit"]
+author: "jts3304"
