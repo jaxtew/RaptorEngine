@@ -1,29 +1,31 @@
 package us.totemsmc.raptorengine;
 
 import org.bukkit.plugin.java.JavaPlugin;
-import us.totemsmc.raptorengine.api.JSONConfiguration;
-import us.totemsmc.raptorengine.map.RaptorMap;
+import us.totemsmc.raptorengine.util.JSONConfiguration;
+import us.totemsmc.raptorengine.util.RaptorLogger;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 public class RaptorEngine extends JavaPlugin
 {
     private static RaptorConfiguration configuration;
+    private Path configFile;
 
-    private RaptorMap map = null;
+//    private RaptorMap map = null;
 
     @Override
     public void onLoad()
     {
         getDataFolder().mkdir();
+        configFile = getDataFolder().toPath().resolve("config.json");
         try
         {
-            configuration = JSONConfiguration.load(RaptorConfiguration.class, getDataFolder().toPath().resolve(
-                    "config.json"));
-            if (RaptorConfiguration.DEBUG) getLogger().info("Loaded configuration");
+            configuration = JSONConfiguration.load(RaptorConfiguration.class, configFile);
+            RaptorLogger.debug("Loaded configuration");
         } catch (IOException e)
         {
-            getLogger().severe("Failed to load configuration");
+            RaptorLogger.severe("Failed to load configuration");
             e.printStackTrace();
         }
     }
@@ -37,19 +39,27 @@ public class RaptorEngine extends JavaPlugin
 //            {
 //                try
 //                {
-//                    map = new RaptorMap("test",
+//                    sender.sendMessage("Creating map...");
+//                    map = new RaptorMap("testgame",
 //                            getServer().getPluginManager().getPlugin("WorldEdit").getDataFolder().toPath().resolve(
-//                                    "schematics").resolve("test_map.schem"), new TestRaptorGame());
+//                                    "schematics").resolve("testmap.schem"), new TestGame());
+//                    sender.sendMessage("Done.");
 //                } catch (IOException e)
-//                {
-//                    e.printStackTrace();
-//                } catch (WorldEditException e)
 //                {
 //                    e.printStackTrace();
 //                }
 //            } else
 //            {
-//                map.close();
+//                if(args.length > 0)
+//                {
+//                    map.getGame().start();
+//                }else
+//                {
+//                    sender.sendMessage("Closing map...");
+//                    map.close();
+//                    map = null;
+//                    sender.sendMessage("Done.");
+//                }
 //            }
 //            return true;
 //        }));
@@ -66,16 +76,16 @@ public class RaptorEngine extends JavaPlugin
     {
         try
         {
-            JSONConfiguration.save(configuration);
-            if (RaptorConfiguration.DEBUG) getLogger().info("Saved configuration");
+            JSONConfiguration.save(configuration, configFile);
+            RaptorLogger.debug("Saved configuration");
         } catch (IOException e)
         {
-            getLogger().severe("Failed to save configuration");
+            RaptorLogger.severe("Failed to save configuration");
             e.printStackTrace();
         }
     }
 
-    public static RaptorConfiguration getConfiguration()
+    public static RaptorConfiguration config()
     {
         return configuration;
     }

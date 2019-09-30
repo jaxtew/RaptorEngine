@@ -1,4 +1,4 @@
-package us.totemsmc.raptorengine.api;
+package us.totemsmc.raptorengine.game;
 
 public enum GameState
 {
