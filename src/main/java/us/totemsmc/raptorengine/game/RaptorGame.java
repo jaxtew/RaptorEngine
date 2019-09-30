@@ -1,23 +1,15 @@
 package us.totemsmc.raptorengine.game;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.block.BlockEvent;
-import org.bukkit.event.entity.EntityEvent;
-import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.scheduler.BukkitTask;
 import us.totemsmc.raptorengine.RaptorEngine;
 import us.totemsmc.raptorengine.map.RaptorMap;
-import us.totemsmc.raptorengine.map.event.RaptorMapEvent;
-import us.totemsmc.raptorengine.map.event.RaptorMapEventConsumer;
 import us.totemsmc.raptorengine.objective.block.BlockObjective;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
 
 public abstract class RaptorGame
 {

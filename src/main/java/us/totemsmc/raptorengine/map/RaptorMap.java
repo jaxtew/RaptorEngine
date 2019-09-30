@@ -32,13 +32,11 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
-import us.totemsmc.raptorengine.RaptorConfiguration;
 import us.totemsmc.raptorengine.RaptorEngine;
 import us.totemsmc.raptorengine.game.GameState;
 import us.totemsmc.raptorengine.game.RaptorGame;
 import us.totemsmc.raptorengine.game.RaptorTeamGame;
 import us.totemsmc.raptorengine.map.event.RaptorMapEvent;
-import us.totemsmc.raptorengine.map.event.RaptorMapEventConsumer;
 import us.totemsmc.raptorengine.map.event.block.RMBlockBreakEvent;
 import us.totemsmc.raptorengine.map.event.block.RMBlockPlaceEvent;
 import us.totemsmc.raptorengine.map.event.objective.RMBreakBlockObjectiveCompleteEvent;
@@ -227,7 +225,7 @@ public final class RaptorMap implements Closeable, Listener
         Bukkit.getScheduler().runTaskAsynchronously(RaptorEngine.getPlugin(RaptorEngine.class), asyncChunkIterator);
     }
 
-    public void handleEvent(RaptorMapEvent event)
+    private void handleEvent(RaptorMapEvent event)
     {
         try
         {
