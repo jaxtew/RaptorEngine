@@ -61,27 +61,36 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public final class RaptorMap implements Closeable, Listener
 {
     private final String name;
-    private final List<BlockObjective> blockObjectives;
     private final RaptorGame game;
-    private final Map<Class, Method> eventHandlers;
+    private List<BlockObjective> blockObjectives;
+    private Map<Class, Method> eventHandlers;
     private MapState mapState;
+    private HashMap<MapState, Runnable> stateChangeTasks;
 
     public RaptorMap(String name, Path schematic, RaptorGame game) throws IOException
     {
-        Instant start = Instant.now();
         mapState = MapState.CREATING;
-        RaptorLogger.debug("Starting creation of map \"" + name + "\" from " + schematic);
+        this.stateChangeTasks = new HashMap<>();
+        RaptorLogger.info("Starting creation of map \"" + name + "\" from " + schematic);
         this.name = name;
         RaptorLogger.debug("Map Name: " + name);
         this.game = game;
+        game.onStateChange(GameState.RUNNING, () -> setMapState(MapState.RUNNING));
+        game.onStateChange(GameState.FINISHED, () -> setMapState(MapState.DONE));
         RaptorLogger.debug("Game: " + game.getName());
+        generate(schematic);
+    }
 
+    private void generate(Path schematic) throws IOException
+    {
+        Instant start = Instant.now();
         /*
             GENERATE VOID WORLD
          */
@@ -131,7 +140,7 @@ public final class RaptorMap implements Closeable, Listener
                 });
             }
         });
-        RaptorLogger.info("Event handlers registered");
+        RaptorLogger.debug("Event handlers registered");
 
         /*
             LOCATE BLOCK OBJECTIVES
@@ -223,6 +232,7 @@ public final class RaptorMap implements Closeable, Listener
 
         // run the async chunk iterator defined above, which schedules sync processing for each sign.
         Bukkit.getScheduler().runTaskAsynchronously(RaptorEngine.getPlugin(RaptorEngine.class), asyncChunkIterator);
+
     }
 
     private void handleEvent(RaptorMapEvent event)
@@ -377,8 +387,17 @@ public final class RaptorMap implements Closeable, Listener
 
     private void setMapState(MapState state)
     {
-        RaptorLogger.debug(name + ": " + state.name());
+        RaptorLogger.info(name + ": " + state.name());
         mapState = state;
+        stateChangeTasks.forEach((s, task)->
+        {
+            if(s == state) task.run();
+        });
+    }
+
+    public void onStateChange(MapState to, Runnable task)
+    {
+        stateChangeTasks.put(to, task);
     }
 
     public RaptorGame getGame()

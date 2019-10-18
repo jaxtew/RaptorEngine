@@ -9,6 +9,7 @@ import us.totemsmc.raptorengine.objective.block.BlockObjective;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public abstract class RaptorGame
@@ -20,6 +21,7 @@ public abstract class RaptorGame
     private boolean hasWinner;
     private BlockObjective[] blockObjectives;
     private final List<Player> players;
+    private HashMap<GameState, Runnable> stateChangeTasks;
 
     public RaptorGame(String name)
     {
@@ -29,6 +31,7 @@ public abstract class RaptorGame
         gameLoop = null;
         hasWinner = false;
         this.players = new ArrayList<>();
+        this.stateChangeTasks = new HashMap<>();
         // initialize
         // open for players to join map
     }
@@ -47,7 +50,7 @@ public abstract class RaptorGame
     {
         if(state != GameState.INITIALIZING) return;
         this.blockObjectives = blockObjectives;
-        state = GameState.WAITING;
+        setGameState(GameState.WAITING);
     }
 
     public final List<BlockObjective> getBlockObjectives()
@@ -81,7 +84,7 @@ public abstract class RaptorGame
     public final void start()
     {
         if(state == GameState.RUNNING) return;
-        state = GameState.RUNNING;
+        setGameState(GameState.RUNNING);
         onStart();
         gameLoop = Bukkit.getScheduler().runTaskTimer(RaptorEngine.getPlugin(RaptorEngine.class), () ->
         {
@@ -101,9 +104,23 @@ public abstract class RaptorGame
     {
         gameLoop.cancel();
         if(state != GameState.RUNNING) return;
-        state = GameState.FINISHING;
+        setGameState(GameState.FINISHED);
         onStop();
         // wait a few seconds?
+    }
+
+    private void setGameState(GameState state)
+    {
+        this.state = state;
+        this.stateChangeTasks.forEach((s, task) ->
+        {
+            if(s == state) task.run();
+        });
+    }
+
+    public final void onStateChange(GameState to, Runnable task)
+    {
+        this.stateChangeTasks.put(to, task);
     }
 
     public abstract void onStop(); // TODO: Add winner
