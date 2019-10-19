@@ -19,7 +19,7 @@ public class ObjectiveParser
     {
         String raw = formatSignText(signText);
         // check for indicator
-        if (raw.charAt(0) == INDICATOR)
+        if (raw.length() > 0 && raw.charAt(0) == INDICATOR)
         {
             String[] props = raw.substring(1).split(" ");
             //check props for validity
@@ -43,7 +43,7 @@ public class ObjectiveParser
     {
         String raw = formatSignText(signText);
         // check for indicator
-        if (raw.charAt(0) == INDICATOR)
+        if (raw.length() > 0 && raw.charAt(0) == INDICATOR)
         {
             String[] props = raw.substring(1).split(" ");
             //check props for validity
@@ -67,7 +67,7 @@ public class ObjectiveParser
     {
         Map<String, String> parsed = new HashMap<>();
         String raw = formatSignText(signText);
-        if (raw.charAt(0) != INDICATOR) return null;
+        if (raw.length() == 0 || raw.charAt(0) != INDICATOR) return null;
         String[] props = raw.split(" ");
         for (String prop : props)
         {
